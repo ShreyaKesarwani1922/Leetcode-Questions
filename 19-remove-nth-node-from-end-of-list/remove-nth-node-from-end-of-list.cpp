@@ -11,33 +11,23 @@
 class Solution {
 public:
     ListNode* removeNthFromEnd(ListNode* head, int n) {
-        // Create a dummy node to handle edge cases easily (e.g., removing the head)
-        ListNode* dummy = new ListNode(0, head);
-        ListNode* fast = dummy;
-        ListNode* slow = dummy;
-
-        // Advance fast pointer n + 1 steps so that slow stops right before the target node
-        for (int i = 0; i <= n; i++) {
-            if (fast == nullptr) return head; // Safety check if n is greater than list length
-            fast = fast->next;
+        ListNode* temp = head;
+        int len = 0;
+        while (temp != NULL) {
+            temp = temp->next;
+            len++;
         }
-
-        // Move both fast and slow until fast reaches the end
-        while (fast != nullptr) {
-            fast = fast->next;
-            slow = slow->next;
+        if (n == len) {
+            head = head->next;
+            return head;
         }
-
-        // Delete the target node
-        ListNode* nodeToDelete = slow->next;
-        slow->next = slow->next->next;
-        
-        // Free memory (good practice, optional for LeetCode)
-        delete nodeToDelete;
-
-        ListNode* newHead = dummy->next;
-        delete dummy; // Clean up dummy node to prevent memory leaks
-        
-        return newHead;
+        temp = head;
+        int m = len - n + 1;
+        int idx = m - 1;
+        for (int i = 1; i <= idx - 1; i++) {
+            temp = temp->next;
+        }
+        temp->next = temp->next->next;
+        return head;
     }
 };
