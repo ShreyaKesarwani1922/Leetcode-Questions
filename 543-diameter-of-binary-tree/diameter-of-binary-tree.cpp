@@ -12,22 +12,19 @@
  */
 class Solution {
 public:
-    int height(TreeNode* root) {
+    int calcHeight(TreeNode* root, int& maxDiameter) {
         if (root == NULL)
             return 0;
 
-        int leftHeight = height(root->left);
-        int rightHeight = height(root->right);
-        return max(leftHeight, rightHeight) + 1;
+        int leftTreeHeight = calcHeight(root->left, maxDiameter);
+        int rightTreeHeight = calcHeight(root->right, maxDiameter);
+
+        maxDiameter = max(maxDiameter, leftTreeHeight + rightTreeHeight);
+        return max(leftTreeHeight, rightTreeHeight) + 1;
     }
     int diameterOfBinaryTree(TreeNode* root) {
-        if (root == NULL)
-            return 0;
-
-        int leftDiameter = diameterOfBinaryTree(root->left);
-        int rightDiameter = diameterOfBinaryTree(root->right);
-        int combiDiameter = height(root->left) + height(root->right);
-
-        return max(leftDiameter, max(rightDiameter, combiDiameter));
+        int maxDiameter = 0;
+        int heightOfTree = calcHeight(root, maxDiameter);
+        return maxDiameter;
     }
 };
