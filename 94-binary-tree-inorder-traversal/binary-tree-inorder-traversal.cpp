@@ -6,21 +6,26 @@
  *     TreeNode *right;
  *     TreeNode() : val(0), left(nullptr), right(nullptr) {}
  *     TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
- *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
+ *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left),
+ * right(right) {}
  * };
  */
 class Solution {
 public:
-    void inorderTraversalRecursive(vector<int> &answer, TreeNode* root) {
-        if (root== NULL) return;
-        
-        inorderTraversalRecursive(answer, root->left);
-        answer.push_back(root->val);
-        inorderTraversalRecursive(answer, root->right);
-    }
-    vector<int> inorderTraversal(TreeNode* root) {
+    vector<int> inorderTraversal( TreeNode* root) {
         vector<int> answer;
-        inorderTraversalRecursive(answer, root);
+        stack<TreeNode*> st;
+        TreeNode* curr = root;
+        while (curr != NULL || !st.empty()) {
+            while (curr != NULL) {
+                st.push(curr);
+                curr = curr->left;
+            }
+            curr = st.top();
+            st.pop();
+            answer.push_back(curr->val);
+            curr = curr->right;
+        }
         return answer;
     }
 };
