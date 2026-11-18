@@ -1,33 +1,42 @@
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode() : val(0), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
+ * };
+ */
 class Solution {
 public:
     vector<vector<int>> zigzagLevelOrder(TreeNode* root) {
-        vector<vector<int>> answer;
-        if (!root) return answer;
+        vector<vector<int>> ans;
+        if (root == NULL) return ans;
 
         queue<TreeNode*> q;
         q.push(root);
         bool leftToRight = true;
 
-        while (!q.empty()) {
+        while(!q.empty()) {
             int size = q.size();
-            vector<int> level(size); // Pre-allocate size
+            vector<int> temp(size);
 
-            for (int i = 0; i < size; i++) {
-                TreeNode* curr = q.front();
+            for(int i=0;i<size;i++) {
+                TreeNode* frontNode = q.front();
                 q.pop();
 
-                // Calculate index based on current level's direction
-                int index = leftToRight ? i : (size - 1 - i);
-                level[index] = curr->val;
+                int index = leftToRight ? i : size-i-1;
+                temp[index] = frontNode->val;
 
-                // Always push children left-to-right
-                if (curr->left) q.push(curr->left);
-                if (curr->right) q.push(curr->right);
+                if (frontNode->left) q.push(frontNode->left);
+                if (frontNode->right) q.push(frontNode->right);
             }
-
-            leftToRight = !leftToRight; // Flip once per level
-            answer.push_back(level);
+            leftToRight = !leftToRight;
+            ans.push_back(temp);
         }
-        return answer;
+        return ans;
+
     }
 };
