@@ -11,45 +11,39 @@
  */
 class Solution {
 public:
-    std::vector<std::vector<int>> verticalTraversal(TreeNode* root) {
-        // Vector to store tuples of {col, row, val}
-        std::vector<std::tuple<int, int, int>> nodes;
-        
-        // Queue stores {node, col, row}
-        std::queue<std::tuple<TreeNode*, int, int>> q;
-        if (root) {
-            q.push({root, 0, 0});
-        }
-        
-        while (!q.empty()) {
-            auto [node, col, row] = q.front();
+    vector<vector<int>> verticalTraversal(TreeNode* root) {
+        vector<vector<int>> answer;
+
+        map<int, map<int, multiset<int>>> nodes;
+        queue<pair<TreeNode*, pair<int,int>>> q;
+
+        if (root == NULL) return answer;
+        q.push(make_pair(root, make_pair(0,0)));
+
+        while(!q.empty()) {
+            auto temp = q.front();
             q.pop();
+            TreeNode* frontNode = temp.first;
+            int hd = temp.second.first;
+            int lvl = temp.second.second;
+
             
-            nodes.push_back({col, row, node->val});
-            
-            if (node->left) {
-                q.push({node->left, col - 1, row + 1});
+
+            nodes[hd][lvl].insert(frontNode->val);
+            if(frontNode->left) {
+                q.push(make_pair(frontNode->left, make_pair(hd-1, lvl+1)));
             }
-            if (node->right) {
-                q.push({node->right, col + 1, row + 1});
+            if (frontNode->right) {
+                q.push(make_pair(frontNode->right, make_pair(hd+1, lvl+1)));
             }
         }
-        
-        // Sort tuples: automatically compares by col first, then row, then val
-        std::sort(nodes.begin(), nodes.end());
-        
-        std::vector<std::vector<int>> result;
-        if (nodes.empty()) return result;
-        
-        int prevCol = INT_MIN;
-        for (const auto& [col, row, val] : nodes) {
-            if (col != prevCol) {
-                result.push_back({});
-                prevCol = col;
+        for (auto& [hd, lvlMap] : nodes) {
+            vector<int> col;
+            for (auto& [lvl, vals] : lvlMap) {
+                col.insert(col.end(), vals.begin(), vals.end());
             }
-            result.back().push_back(val);
+            answer.push_back(move(col));
         }
-        
-        return result;
+        return answer;
     }
 };
